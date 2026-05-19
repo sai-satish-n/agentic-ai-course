@@ -1,0 +1,23 @@
+Pydantic Output Parsing (Best Practice):
+    Step 1: Define Schema
+    Step 2: Create Parser
+        
+        from langchain.output_parsers import PydanticOutputParser
+        parser = PydanticOutputParser(pydantic_object=Person)
+    
+    Step 3: Build Prompt
+        {parser.get_format_instructions()}
+    
+    Step 4: Parse
+        parsed = parser.parse(response.content)
+
+
+Structured output parsing is basically:
+
+LLM Text
+   ↓
+Schema Enforcement
+   ↓
+Validation
+   ↓
+Reliable Machine-Readable Data
