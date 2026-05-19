@@ -1,0 +1,76 @@
+Call multiple LLM providers via LangChain
+Build multi-step prompt pipelines
+Apply CoT, few-shot, role-based prompting
+Implement structured output parsing -> mentioning the valid response models in the prompt itself helps
+Create reusable prompt templates
+
+
+
+Chain-of-Thought (CoT) Prompting:
+    Asking the model to reason step-by-step before giving the final answer.
+
+    example prompt with CoT:
+        Think step-by-step.
+
+        A shopkeeper had 20 apples.
+        He sold 7 and bought 5 more.
+        How many apples does he have now?
+
+
+    The prompt nudges the model to generate:
+
+        intermediate tokens
+        logical decomposition
+        self-consistency patterns
+
+
+    CoT is especially useful for:
+        mathematics
+        coding
+        logical reasoning
+        planning
+        multi-step analysis
+        debugging
+        decision-making
+
+
+
+Zero-shot → no examples
+One-shot → one example
+Few-shot → several examples
+
+
+It can teach the model:
+    custom formats
+    domain-specific behavior
+    niche classification tasks
+    API response styles
+    structured outputs
+
+
+
+| Few-shot     | Fine-tuning    |
+| ------------ | -------------- |
+| Temporary    | Permanent      |
+| Prompt-based | Training-based |
+| Fast         | Expensive      |
+| Flexible     | Specialized    |
+
+
+
+Role-Based Prompting: 
+    Assigning the model a specific identity, profession, expertise, or behavior style.
+
+    Example: 
+        You are a senior software architect.
+
+        Act as an experienced mathematics professor.
+
+    Roles influence:
+        vocabulary
+        tone
+        reasoning depth
+        priorities
+        communication style
+
+    The model adapts its behavior to the role
