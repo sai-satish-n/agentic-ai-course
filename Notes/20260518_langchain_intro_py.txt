@@ -1,0 +1,12 @@
+ainvoke() is LangChain’s native async method
+
+
+In this script we are running the script which first loads the propmt and then calls the GeminiAPI for the response with the model you have taken.
+
+We are using the abstraction of Langchain in this script.
+    ChatGoogleGenerativeAI → LangChain wrapper around Gemini
+    HumanMessage → LangChain message schema
+    OutputParserException → LangChain exception class
+
+
+It is a LangChain-powered Gemini integration.
