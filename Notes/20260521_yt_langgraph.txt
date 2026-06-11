@@ -1,0 +1,104 @@
+Langgraph:
+    it is an open-source framework for building LLM-based applications
+
+    in agentic-ai, langgraph helps us to build agents that can 
+        think
+        make decision
+        use tools or APIs
+        take actions
+    
+    graphs represents the workflows:
+        Node:
+            in langgraph where ever task or action is happening or tool is getting used __..__
+        Edge:
+            connection between any two nodes is by using edges
+        State:
+            carrying the information from one node to other
+
+            it also carries the information from the previous nodes.
+
+            requirement of state: it ensures the system can remember past actions, inputs or decisions and can use that memory in the future steps
+        
+        
+Langgraph uses:
+    it is designed for complex workflows which include
+        branching logic
+        fallback mechanisms: fallback mechanisms are important for reliability and user satisfaction
+        multi-step decisions
+
+    important things in langgraph are:
+        node
+        edges
+        state
+        state machine
+            it acts like the decision making system.
+            
+            every edge has a condition that need to be true to get forward with that path
+            
+            so state machine evaluates the conditions on the necessary branches and proceed with the suitable branch.
+
+
+Tools:
+    tools are the external funcitonality
+
+    even if we have extra funcitonality in terms of function we should wrap with the Tools.
+
+
+Multi-agent:
+    problems with single agent:
+        when using same agent with multiple tools then agent can pick wrong tool
+
+        And even it will be slow
+
+
+    with multiagent the task will be deligated to the specific agent so that there is no ambiguity or error
+
+    the system performance will also be improved.
+
+
+    refer the ways in which multi-agents can interact[multi-agent-interaction]
+        single agent: LLM will decide if it needs to use tool and which tool to use.
+
+        Network: 
+            every agent is connected with all other agents
+
+        supervisor:
+            supervisor agent is connected to all other agents
+
+        supervisor(agents as tools): 
+            llm decides which agent to pick
+
+        custom: we can decide which agents can share the information
+
+    in multi-agent system nodes are agents
+
+    each agent performs a task and handsoff control over to other agent.
+    
+    when handing off a task to an agent we handoff using Command class, with two arguments
+        goto -> name of the agent
+        update -> any text for the user understanding
+
+
+Agentic + RAG:
+    problems with standard llms are
+        they can't access new information as they don't know information that they are not trained on.
+
+        These models don't work well  with private data.
+
+        They hallucinate: they generate false or misleading information as they don't fact check in real time.
+
+    These problems can be addressed by fine-tuning, retraining with new data but this take alot of compute and time.
+
+    So other way is that RAG
+
+    Retrival:
+        it searches the external knowledge like urls, books, articles.
+
+    Augumentation:
+        the query and the data fetched will be passed to next stage.
+
+    Generation(LLM):
+        LLM will generate response based on the context retrived.
+
+
+    RAG help us to have the dynamic and robust content included in the LLM response generation

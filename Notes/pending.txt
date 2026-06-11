@@ -1,0 +1,21 @@
+20260518:
+    https://www.promptingguide.ai/ -> promptingguide
+    
+
+20260519:
+
+    Provider Landscape: check the basic context and how to run and connect them locally.
+
+        OpenAI (GPT-5/5.1) overview
+        Anthropic (Claude) long-context
+        Mistral (open weights)
+        Open-source (LLaMA self-host)
+        Free options (Gemini Flash, Groq)
+
+    Langchain core: 
+        https://www.langchain.com
+
+
+
+App idea:
+    create an agent that can book tatkal tickets online.

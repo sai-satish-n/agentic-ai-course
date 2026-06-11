@@ -1,0 +1,56 @@
+Tokenization:
+    Tokens are not words. They are usually parts of a word. 
+     
+    The tokenizer is trained in such a way that it is able to encapsulate most of the language by splitting words into representative codes, or tokens.
+
+    The number of tokens a model can process at a time – its context window – directly impacts how it comprehends, generates, and interacts with text. 
+
+    How Many Tokens Do You Need?
+        Once you’re able to calculate the number of tokens, then you need to figure out how much context you need to solve your problem. You do this by establishing a metric to quantify how good a result is.
+
+    in English, a token typically represents about 4 characters
+
+
+    Developers must consider the trade-off between the depth of analysis and the computational resources available.
+
+    during encoding, each token is assigned a unique numerical identifier.The mapping typically involves a predefined vocabulary, assigning each unique token a specific integer.
+
+
+
+The role of tokenizers in different language models:
+    Transformer-based models, for instance, commonly use WordPiece or Byte Pair Encoding (BPE) algorithms.
+
+        WordPiece Tokenization: 
+        
+            Used by models like BERT, WordPiece starts with a base vocabulary of individual characters and progressively merges the most frequent combinations of tokens to form new, larger tokens.
+
+            This approach is beneficial for handling words not in the initial vocabulary, as it breaks them down into recognizable sub-tokens.
+
+            WordPiece is adept at dealing with a mix of common words and rare or technical terms, ensuring more efficient and effective processing by the model.
+
+        
+        Byte Pair Encoding (BPE):
+            Employed by models such as ChatGPT, BPE is a subword tokenizer that iteratively replaces the most frequent pairs of bytes or characters in a text with a single new token.
+
+            Starting with the basic characters of the training text, BPE continuously merges the most common pairs, adding them as new units to the vocabulary. This process is repeated until a desired vocabulary size is reached.
+
+            The advantage of BPE lies in its ability to handle out-of-vocabulary (OOV) words by breaking them into smaller, known subwords, making it particularly useful for languages with complex morphology or large vocabularies.
+
+            For example, a BPE encoder would split the word ’encoding’ into ’encod’ and ‘ing’ units. Given that ‘ing’ is a common suffix in English, frequently appearing across various texts, 
+                this segmentation aids in enhancing the model’s capacity for generalization and in deepening its comprehension of grammatical structures.
+
+        SentencePiece method useful in multilingual settings and 
+        
+        Character-Based Tokenization which is widely used in Chinese-based language models.
+
+    
+In RAG:
+    This process involves querying a corpus of documents to find relevant content and then integrating this context into a prompt.
+
+    The challenge lies in including as much pertinent context as possible without exceeding the token limit. To address this, LLMs come equipped with native functions or methods enabling token counting within the model’s processing pipeline.
+
+
+Another robust tool for text tokenization is the AutoTokenizer class from the transformers library. This class significantly simplifies the process of preparing data for use with sophisticated models such as Mixtral 8x 7B. One achieves this by inputting the name of a pre-trained model as a string into the from_pretrained() method and then assigning the output to a variable (AutoTokenizer.from_pretrained('mistralai/Mistral-8x7B'))
+
+
+

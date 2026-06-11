@@ -1,0 +1,57 @@
+LangChain Prompt Templates:
+    LangChain prompt templates are a tool that allows developers to create reusable, dynamic prompts for language models. By replacing static prompts with templates that use placeholders, developers can generate more consistent and efficient outputs. 
+
+    Latenode offers a visual drag-and-drop builder, eliminating the need for coding. This makes prompt creation accessible to non-programmers while enabling real-time collaboration and error detection
+
+
+Basic Structure and Syntax of LangChain Prompt Templates:
+    LangChain prompt templates are built on three core components that enable the creation of dynamic and reusable prompts.
+
+    Template string: The base text containing placeholders, marked with curly braces, for dynamic variables.
+    Input variables: These define the expected data that will replace the placeholders.
+    Values: The actual data provided during execution to populate the placeholders.
+
+
+
+Python file contents:    
+    The input_variables parameter ensures that every placeholder in the template string receives a corresponding value, acting as a safeguard against runtime errors. This design makes LangChain templates more reliable and easier to debug, especially in production environments.
+
+
+LangChain Classes Overview
+
+    LangChain offers several classes tailored to different templating needs, each optimized for specific interaction patterns:
+
+    PromptTemplate: Best suited for single-message prompts, typically used in text completion tasks.
+    
+    ChatPromptTemplate: 
+        ChatPromptTemplate is designed for role-based conversations, making it essential for chat models like GPT-4 or Claude. 
+        
+        This structure ensures that each role in a conversation - whether it's the system, user, or assistant - can have its own distinct behavior while still incorporating dynamic variables.
+
+    
+    MessagesPlaceholder: 
+        Enables dynamic insertion of conversation histories, ideal for chatbots requiring context awareness.
+
+        The MessagesPlaceholder class extends this functionality by allowing entire conversation histories to be dynamically inserted.
+
+        This flexibility is especially useful for building chatbots that need to maintain context across multiple interactions.
+
+
+The .format() method is used for single-use formatting, while .format_prompt() produces a PromptValue object that integrates seamlessly with LangChain's workflows.
+
+
+partial formatting
+    allows you to predefine certain variables in a template while leaving others open for customization.
+
+    By using the partial() method, you can create a hierarchy of templates that reduce redundancy and streamline the development process. 
+
+
+
+Types of LangChain Prompt Templates:
+    String-Based Prompt Templates:
+        String-based prompt templates form the backbone of LangChain's system, designed specifically for completion models. These templates allow you to insert variables into a single text string, which is then sent directly to the language model.
+
+        string templates are limited to single-message interactions,making them less suitable for multi-turn conversations or applications requiring role-based dialogue, like chatbots
+
+    ChatPromptTemplate for Multi-Message Interactions:
+        

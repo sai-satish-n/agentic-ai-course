@@ -1,0 +1,93 @@
+Why do we need vector databases:
+    vector databases helps with similarity search among vector embeddings which normal databases doesn't support
+    
+    they are optimized for vector similarity search and retrieval
+
+
+A vector store is a system designed to store and retrieve data represented as numerical vectors.
+Key Features
+    1. Storage-Ensures that vectors and their associated metadata are retained, whether in-memory for quick lookups or on-disk for durability and large-scale use.
+    2. Similarity Search - Helps retrieve the vectors most similar to a query vector.
+    3. Indexing Provide a data structure or method that enables fast similarity searches on high-dimensional vectors (e.g., approximate nearest neighbor lookups).
+    4. CRUD Operations - Manage the lifecycle of data-adding new vectors, reading them, updating existing entries, removing outdated vectors.
+    
+Use-cases
+    1. Semantic Search
+    2. RAG
+    3. Recommender Systems
+    4. Image/Multimedia search
+
+
+How does vector stores help in faster similarity search:
+    Vector stores uses special indexing structures like HNSW, IVF, etc.
+    Eg: the embeddings stored are clustered, then found out centroid for each cluster.
+    The new embedding is considered to belong to the cluster if this point is close to the centroid point, then we can search only within that cluster, rather than searching entire dataset.
+
+Difference between vector stores and vector databases:
+    Vector Store
+        Typically refers to a lightweight library or service that focuses on storing vectors (embeddings) and performing similarity search.
+        May not include many traditional database features like transactions, rich query languages, or role-based access control.
+        Ideal for prototyping, smaller-scale applications
+        Examples: FAISS (where you store vectors and can query them by similarity, but you handle persistence and scaling separately).
+    Vector Database
+        A full-fledged database system designed to store and query vectors.
+        Offers additional "database-like" features:
+            Distributed architecture for horizontal scaling
+            Durability and persistence (replication, backup/restore)
+            Metadata handling (schemas, filters)
+            Potential for ACID or near-ACID guarantees
+            Authentication/authorization and more advanced security
+        Geared for production environments with significant scaling, large datasets
+
+
+Vector Stores in LangChain
+    Supported Stores: LangChain integrates with multiple vector stores (FAISS, Pinecone, Chroma, Qdrant, Weaviate, etc.), giving you flexibility in scale, features, and deployment.
+    Common Interface: A uniform Vector Store API lets you swap out one backend (e.g., FAISS) for another (e.g., Pinecone) with minimal code changes.
+    Metadata Handling: Most vector stores in LangChain allow you to attach metadata (e.g., timestamps, authors) to each document, enabling filter-based retrieval.
+
+Chroma DB:
+    Chroma is a lightweight, open-source vector database that is especially friendly for local development and small- to medium-scale production needs.
+
+    Hirearchy of Chroma DB:
+        on Top Tenant
+            Database
+                collection
+                    document
+                        embedding
+                        metadata
+                        page_content
+
+
+Creating a chroma db vector store:
+docs = [doc1, doc2, ...]
+vector_store = Chroma(
+    embedding_function=embedding_function,
+    collection_name="<vector store name>",
+    persist_directory="<path to store vectors>",
+    client_settings=ChromaSettings(
+        is_persistent=True
+    ),
+)
+
+vector_store.add_documents(docs)
+
+vector_store.similarity_search(
+    query="query"
+    k=<top_k_matches>
+) #returns top k matches
+
+vector_store.similarity_search_with_score(
+    query="query"
+    k=<top_k_matches>
+) #returns top k matches with scores, less the score more they are similar
+
+
+vector_store.delete(ids=[])
+vector_store.update_document(document_id =  <id>, document=<updated_document>)
+
+
+
+
+Embedding function: is function that converts the text into vectors
+
+

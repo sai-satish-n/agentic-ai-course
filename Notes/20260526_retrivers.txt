@@ -1,0 +1,109 @@
+A retriever is a component in LangChain that fetches relevant documents from a data source in response to a user's query.
+There are multiple types of retrievers: each retriver works with type of data.
+    Wikipedia retriever: used to fetch from Wikipedia using Wikipedia API
+    Vectore store retriever: 
+        search and fetch documents from a vector store based on semantic similarity using vector embeddings.
+
+        just define the vectorstore and then convert it into a retriever using as_retriever() method
+        retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
+
+        vectorstore has the function to perform similarity search, then why do we need a retriver
+            using retriever function we can use different search strategy
+    
+    Maximum Marginal retriever: Reduces redundancy in results
+        MMR is an information retrieval algorithm designed to reduce redundancy in the retrieved results while maintaining high relevance to the query.
+        
+        Why MMR Retriever?
+        In regular similarity search, you may get documents that are:
+            All very similar to each other
+            Repeating the same info
+            Lacking diverse perspectives
+        MMR Retriever avoids that by:
+            Picking the most relevant document first
+            Then picking the next most relevant and least similar to already selected docs
+
+        This helps especially in RAG pipelines where:
+            You want your context window to contain diverse but still relevant information
+            Especially useful when documents are semantically overlapping
+
+
+        from langchain_community.vectorstores import FAISS
+        
+        # Initialize OpenAI embeddings
+        embedding_model = OpenAIEmbeddings()
+        
+        # Step 2: Create the FAISS vector store from documents
+        vectorstore = FAISS.from_documents(
+            documents=docs,
+            embedding=embedding_model
+        )
+
+        retriever = vectorstore.as_retriever(
+            search_type="mmr",  
+            search_kwargs={"k": 3, "lambda_mult": 1} #0<=lambda_mult <=1
+            #lambda_mult = 1 means only similarity
+            #lambda_mult = 0 means only diversity
+        )
+
+        #lambda_mult is known as relevance-diversity balance
+
+        docs = retriever.invoke(query)
+        
+
+        
+    Multi-query retriver: generates multiple queries and fetches documents based on them
+        A simple similarity search might miss documents that talk about those things but don't use the word "healthy."
+            1. Takes your original query
+            2. Uses an LLM (e.g., GPT-3.5) to generate multiple semantically different versions of that query
+            3. Performs retrieval for each sub-query
+            4. Combines and deduplicates the results
+        
+        example: 
+            actual query: "How can I stay healthy?"
+            Generated queries:
+                1. "What are the best foods to maintain good health?"
+                2. "How often should I exercise to stay fit?"
+                3. "What lifestyle habits improve mental and physical wellness?"
+                4. "How can I boost my immune system naturally?"
+                5. "What daily routines support long-term health?"
+
+        from langchain.retrivers.multi_query import MultiQueryRetriever
+
+        retriever = MultiQueryRetriever.from_llm(
+            retriever=vectorstore.as_retriever({search_kwargs={"k": 2}}),
+            llm=llm,
+            verbose=True
+        )
+
+    Contextual Compression retriever: Compresses documents to improve performance
+        The Contextual Compression Retriever in LangChain is an advanced retriever that improves retrieval quality by compressing documents after retrieval - keeping only the relevant content based on the user's query.
+        
+        Query: "What is photosynthesis?"
+        Retrieved Document (by a traditional retriever): as this document contains about photosynthesis the entire document will be fetched which is not correct
+            "The Grand Canyon is a famous natural site.
+            Photosynthesis is how plants convert light into energy.
+            Many tourists visit every year."
+        
+        Problem:
+            The retriever returns the entire paragraph
+            Only one sentence is actually relevant to the query
+            The rest is irrelevant noise that wastes context window and may confuse the LLM
+        
+        What Contextual Compression Retriever does:
+            Returns only the relevant part, e.g. "Photosynthesis is how plants convert light into energy."
+
+        this retriever has two parts:
+            1. content_aware_filter: Filter relevant content from documents
+            2. document_compressor: Compress documents to remove irrelevant content
+        First the content aware filter will filter the relevant content from documents
+        then the result along with the question is passed to other LLM to filter out only relavant context
+
+    Arxiv retriever: used to fetch from Arxiv research papers
+    Parent Document retriever: Retrieves parent documents and their children
+    Re-ranking retriever: Re-ranks documents to improve relevance
+    Ensemble retriever: Combines multiple retrievers
+    
+
+All retrievers in LangChain are runnables
+
+FAISS is a vectorstore from facebook.

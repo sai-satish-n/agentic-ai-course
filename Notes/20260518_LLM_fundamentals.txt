@@ -1,0 +1,165 @@
+The Problem of Big Data in Small Context Windows:
+    Large language models (LLMs) are machine learning algorithms that have been trained upon large amounts of text to predict subsequent words. They are based upon a paradigm known as deep learning, where vast numbers of linear equations are combined with a function that doesn’t behave – a “non-linearity.” With sufficient numbers of these building blocks, called neurons, and some sophisticated domain-specific high-level architectures, these models are able to generate text simply by guessing what the next word should be.
+
+    They look at all of the previous text and feed that into a big set of inputs so the LLM can see all of the context. 
+
+    Context window:
+        A context window represents the textual input to a LLM
+
+        context window makes LLM’s so powerful.
+
+        High level system prompts tell the LLM how it should communicate whereas the context says what it should do.
+
+    feature engineering: chopping the words up into chunks called tokens, and then converting combinations of tokens into a high-dimensional number, called embeddings.
+
+    LLM has been trained on a huge amount of textual data, so it’s likely that it has seen something similar before. If you pass a question into the context, the LLM converts that into a position in high-dimensional space which happens to be close to some content that it has seen before.
+
+    The only remaining task is to predict where next to move in this high-dimensional space. It does this by traversing its internalized mathematical model of all the embeddings it has seen; much like predicting the next step in the trajectory of a cannonball. The prediction is another embedding, which then gets converted back into tokens and eventually text.
+
+    Typically LLMs are provided with hidden system prompts to form a baseline level of service. So they’re never truly starting from scratch.
+
+    LLMs are predicting the next step based upon the well-trodden path of all of the internet’s knowledge.
+
+
+    some models have a sliding window, which means you can pass in more than the number of stated tokens, but they won’t be used in the prediction.
+
+
+    more context means slower response times.
+
+    there are overheads that you must also take into account.These include system prompts that you design, but also the system prompts that are inherent to the model.
+
+
+    context window of an existing LLM can't be expanded without changing the underlying model architecture.
+
+
+    
+    
+    How do you fit more text into the context window of an LLM?
+        Often they stream or chunk or compress the context window to fit more in.
+    
+
+Strategies for Using Big Data in LLMs:
+    Strategy 1: Use a Model With a Bigger Context Window
+    Strategy 2: Sliding Methods
+        Chunking: 
+            simply run the generation against a very small chunk of data.
+
+            This works best when the question doesn’t require any global context about the document.
+
+            Chunking text involves splitting documents into discrete blocks of text, or chunks.
+
+        
+        Sliding:
+            Chunking can be inefficient when chunk sizes are small. 
+            
+            The latency of the request and the response can add a significant overhead when running at scale.
+
+            You can minimize the latency overhead by maximizing the number of words in the chunk and then sliding over the chunks with some overlap. 
+            
+            The overlap ensures that any context that is missed due to a sentence/paragraph chopped in half is fully appreciated on the next chunk.
+
+            Sliding jumps over document, like chunking, but overlaps with the previous chunk.
+
+    Strategy 3: Filtering Methods
+        you can filter out unnecessary context.
+
+        Simple Filtering:
+            using a simple, heuristic filter.
+
+            Some examples of simple filtering are:
+
+                Keyword filtering
+                Structured filtering (e.g. only send a small part of the structured data)
+                Length filtering (e.g. truncate context to x amount of tokens)
+
+        
+        Lexical filtering:
+            Natural language processing has an extensive library of feature engineering tools.
+
+            Spacy is a great library to work with.
+
+            Some examples of lexical filtering are:
+
+                Removing parts of speech that have low informative power
+                
+                Removing specific speech tags that are not relevant to your problem (e.g. names, places, etc.).
+
+        Retrieval based filtering:
+            submit a user intent along with institutional context that provides the answer. It is often referred to as retrieval augmented generation (RAG).
+
+    
+    Strategy 4: Compression Methods
+        Compression methods take a piece of text and attempt to reduce its size. 
+        
+        compression tends to view the problem as attempting to retain some semblance of the original, at least to an outside observer.
+
+        Lossy Compression:
+            This is where a function or a model summarizes the key points from a text. This summary is then sent to the LLM along with the intent. 
+            
+            This is how the “auto-summarizer” features work in online search engines.
+
+        Non-Lossy Compression:
+            example of this in action is to ask an LLM to rewrite the content in bullet form. More sophisticated users might train a dedicated attention model to learn the most important parts of text in their domain based upon information gain or fine tune with a low rank adaptor.
+
+        Minification:
+            This form of compression is a bit of an outlier. Some new approaches take the idea of non-lossy compression and use well known information scoring techniques to quantitatively specify how important parts of individual texts are. This is another form of non-lossy compression.
+
+    Strategy 5: Efficiency Methods
+        Better Prompts:
+            if your application is heavily reliant on prompts, then the quality and performance of the prompt has a huge bearing on the required context.
+
+            For starters, remember that the system prompt forms part of the context budget. So sharpen that up. If your prompt has the power to call external tools or functions, then make sure that the result of those are succinct. And make sure that they are only called when absolutely necessary.
+
+            You can also work on the formatting of the output, making it more concise or even structured. This will reduce latency and memory usage.
+
+        Switch Prompts for Models:
+            I would normally use an LLM to prototype an idea and then, if it has legs, convert that into a bona fide ML model. I’d even use an LLM to generate the training data!
+
+        
+        Allow the LLM to Call Databases:
+            The idea here is that you can store parts-of-context and past interactions in a vector database, then either retrieve that reference at prompt-time or allow the LLM to query the database itself.
+
+            The embeddings themselves are often called contextual embeddings, because they can contain prior interactions or other information directly related to the current context. 
+
+            This strategy is the hardest to keep control of.
+
+
+The Entrepreneur requirements:
+    Building a proof of concept (POC) is a great way to de-risk both the technical feasibility and the market viability of a product. 
+    
+    Many POCs are thrown away or are rewritten, but they are a very useful tool to help drive product direction.
+
+    The overall aim of a POC is to tease out the key risks in the shortest amount of time.
+
+
+    Once you start to move past the POC phase, you will probably want to start optimizing the context for latency, cost, and stability
+
+        At this point you should consider:
+            Better prompts
+            Lossy compression
+            Switch prompts for models
+
+    Finally, when you’re optimizing for production use, you should start thinking about high-level architectural improvements like:
+
+        Using local (or co-located) LLM models
+        Caching
+        Fine-tuning
+
+
+
+The Enterprise requirements:
+    The enterprise customer is typically expected to deliver a more robust service that serves more users and leverages more data, principally due to the fact that the organization is larger.
+
+    you can start with retrieval based filtering.
+
+    If it sits in a database you have records. If it’s in Sharepoint, you have documents. You might want to perform further chunking
+
+
+    The challenge with this approach is that you will need to have a pre-computed cache of the embeddings to compare against.  -> What happens if you change your embedding or tokenizer function? Or if you change your chunking strategy? How do you detect changes to content?
+
+    The alternative strategy is allowing your LLM to query the repository directly and consume the result. This works really well with content that is already well structured (e.g. an API) or already has a good search capability (e.g. document databases)
+
+
+    it is already possible to batch multiple generation requests together, rather than one at a time, to improve operator efficiency
+
+    The next big jump will come from batching token generation for individual requests. I.e. rather than recursively generating the next token, generate 10, or 100 in parallel. One hot off the press library called lookahead decoding is pointing in this direction, reporting approximately 2x speed ups.

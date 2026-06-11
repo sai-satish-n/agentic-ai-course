@@ -1,0 +1,103 @@
+chain.get_graph().print_ascii() -> It will display the graph of the chain as an image
+
+Chain: 
+    1. Sequential Chain
+    2. Parllel Chain
+    3. Conditional Branching chain
+
+
+Sequential chain:
+    the outputs are moved Sequentially.
+
+    example: chain = template | model | parser
+
+
+Parllel chain:
+    To create parallel chain we have to use RunnableParallel
+    
+    from langchain.schema.runnable import RunnableParallel
+    parser = StroutputParser()
+        parallel_chain RunnableParallel({
+        'notes': prompt1 | modell | parser,
+        'quiz': prompt2 | model2 | parser
+    })
+    merge_chain = prompt3 | modell | parser
+    chain = parallel_chain | merge_chain
+    text = """  """
+    chain.invoke({'text':text})
+
+
+Conditional Chains:
+    To create conditional chains we have to use RunnableBranch
+
+    RunnableBranch takes in tuples of format (condition, chain) it is like a if-else if-else ladder.
+    The last tuple should not have any condition that is the default chain
+
+    If you just want to run some function not a chain in the default section then make it RunnableLambda
+    
+    from langchain.schema.runnable import RunnableBranch, RunnableLambda, RunnableParallel
+
+    branch_chain = RunnableBranch(
+        (lambda x: x.sentiment == 'positive', prompt2 | model | parser),
+        (lambda x: x.sentiment == 'negative', prompt3 | model | parser),
+        RunnableLambda (lambda x: "could not find sentiment")
+    )
+
+    
+Runnables:
+    LangChain teams intended to create chains that will reduce the human effort while generating the desired output.
+    
+    But in the starting the created many chains as per requirement.
+    Later they realised that it will be difficult for the user to understand and debug the code and the learning curve has became steeper.
+
+    This happened because the components that LangChain built are meant to interact but they don't have common interfaces i.e to integrate with each other.
+    
+    so they developed concept of runnables.
+
+    Runnables can be treated as unit of work. They take some input process it and then give the output.
+
+    Examples of common interfaces:
+        invoke -> single input can be processed at once
+        batch -> multiple inputs can be processed at once
+        stream -> it will stream the output in chunks
+        
+    
+    We have 2 types of Runnables: 
+        Task Specific Runnables:
+            Definition: These are core LangChain components that have been converted into Runnables so they can be used in pipelines.
+            Purpose: Perform task-specific operations like LLM calls, prompting, retrieval, etc.
+            Examples:
+                ChatOpenAI -> Runs an LLM model.
+                PromptTemplate -> Formats prompts dynamically.
+                Retriever -> Retrieves relevant documents.
+        Runnable Primitives:
+        Definition: These are fundamental building blocks for structuring execution logic in Al workflows.
+        Purpose: They help orchestrate execution by defining how different Runnables interact (sequentially, in parallel, conditionally, etc.).
+        Examples:
+            RunnableSequence -> Runs steps in order ( operator).
+            RunnableParallel -> Runs multiple steps simultaneously.
+            RunnableMap -> Maps the same input across multiple functions.
+            RunnableBranch -> Implements conditional execution (if-else logic).
+            RunnableLambda -> Wraps custom Python functions into Runnables.
+            RunnablePassthrough -> Just forwards input as output (acts as a placeholder).
+
+
+
+RunnableSequence:
+    RunnableSequence is a sequential chain of runnables in LangChain that executes each step one after another, passing the output of one step as the input to the next.
+    
+    It is useful when you need to compose multiple runnables together in a structured workflow.
+
+    its just a formal way of defining chain
+    example: merge_chain = prompt3 | modell | parser -> RunnableSequence(prompt3, modell, parser)
+
+
+RunnablePassthrough:
+    RunnablePassthrough is a utility runnable in LangChain that acts as a pass-through, it simply passes the input it receives directly to its output without any modification.
+
+    Use Case: When you need to include a placeholder in your chain or pass data to multiple branches without altering it, RunnablePassthrough is the perfect tool.
+
+
+
+LangChain Expression Language (LCEL):
+    Rather than defining RunnableSequence we can use the pipe operator

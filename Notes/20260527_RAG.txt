@@ -1,0 +1,87 @@
+Why the need of rag:
+    LLMs generate responses:
+        1. without recent data
+        2. has hallucinations for tricky prompts
+        3. doesn't not has information about our private data
+    
+    We can solve the above problems with following ways
+        Fine-Tuning
+        In-context learning
+        Using RAG
+
+
+Fine-Tuning:
+    1. Collect data: A few hundred-few hundred-thousand carefully curated examples (prompts desired outputs).
+    2. Choose a method: Full-parameter FT, LORA/QLORA, or parameter-efficient adapters.
+    3. Train for a few epochs: You keep the base weights frozen or partially frozen and update only a small subset (LORA) or all weights (full FT).
+    4. Evaluate & safety-test: Measure exact-match, factuality, and hallucination rate against held-out data: red-team for safety.
+
+
+Reasons to avoid fine-Tuning:
+    for every new data we need to re-train the model
+    it would be costly and time-taking process
+    if the new information is keep on growing frequently then Fine-Tuning is not an optimal choice
+
+
+In-context learning:
+    In-Context Learning is a core capability of Large Language Models (LLMs) like GPT-3/4, Claude, and Llama, where the model learns to solve a task purely by seeing examples in the prompt-without updating its weights.
+
+    An emergent property is a behaviour or ability that suddenly appears in a system when it reaches a certain scale or complexity-even though it was not explicitly programmed or expected from the individual components.
+
+
+Using RAG:
+    Instead of just example tasks, retrieve background information, facts, documents, product manuals, etc.
+    
+    Inject that into the prompt to augment the model's knowledge
+
+
+    Important steps in building RAG:
+        indexing: preparing knowledge base so that it can be efficiently searched at query time
+            document ingestion
+            Text chunking
+            embedding generation: convert each chunk into dense vectors that capture the meaning
+        retrieval
+        augmentation
+        generation
+
+
+Evaluation Metrics of RAGs:
+    Metric                  What It Measures
+    faithfulness            Is the answer grounded in the retrieved cont
+    answer_relevancy        Is the answer relevant to the user's question?
+    context_precision       How much of the retrieved context is actually
+    context_recall          Did we retrieve all necessary information?
+
+    Evaluation Libraries
+        Ragas
+        Langsmith
+
+
+Enchancing performance of RAGs:
+    3. Indexing
+        a. Document Ingestion
+        b. Text Splitting
+        c. Vector Store
+    4. Retrieval
+        a. Pre-Retrieval
+            i. Query rewriting using LLM
+            ii. Multi-query generation
+            iii. Domain aware routing
+        b. During Retrieval
+            i. MMR
+            ii. Hybrid Retrieval
+            iii. Reranking
+        c. Post-Retrieval
+            i. Contextual Compression
+    5. Augmentation
+        a. Prompt Templating
+        b. Answer grounding
+        c. Context window optimization
+
+    6. Generation
+        a. Answer with Citation
+        b. Guard railing: preventing the sensitive information leaks
+    7. System Design
+        a. Multimodal
+        b. Agentic
+        c. Memory based

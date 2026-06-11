@@ -1,0 +1,84 @@
+Text Splitting is the process of breaking large chunks of text (like articles, PDFs, HTML pages, or books) into smaller, manageable pieces (chunks) that an LLM can handle effectively.
+
+Overcoming model limitations: Many embedding models and language models
+have maximum input size constraints. Splitting allows us to process documents that would otherwise exceed these limits.
+
+Downstream tasks - Text Splitting improves nearly every LLM powered task
+Task                                    Why Splitting Helps
+Embedding                               Short chunks yield more accurate vectors
+Semantic Search                         Search results point to focused info, not noise
+Summarization                           Prevents hallucination and topic drift
+
+Optimizing computational resources: Working with smaller chunks of text can be more memory-efficient and allow for better parallelization of processing tasks.
+
+Text Splitters Types:
+-Length Based: fixed characters or tokens
+    from langchain.text_splitters import CharacterTextSplitter
+    from langchain_community.document_loaders import PyPDFLoader
+    loader = PyPDFLoader("doc_name.pdf")
+    document = loader.load()
+    
+    splitter = CharacterTextSplitter(
+        chunk_size=100,
+        chunk_overlap=0,
+        separator=''
+    )
+
+    docs = splitter.split_text(text)
+
+    docs = splitter.split_documents(document)
+
+-Text Structure Based:
+    uses recursive text splitting. 
+    First paragraphs are splitted, then sentences wise splitted, then splitted based on words. Then to optimize the splitted words are clubbed together within maximum_size.
+    
+    from langchain.text_splitters import RecursiveCharacterTextSplitter
+
+    text = '''text'''
+    
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=100,
+        chunk_overlap=0,
+    )
+    docs = splitter.split_text(text)
+
+-Document Structure Based:
+    to split the document based on the structure we can the language parameter in the text splitter
+
+    from langchain.text_splitters import RecursiveCharacterTextSplitter, Language
+
+
+    splitter = RecursiveCharacterTextSplitter.from_language(
+        language=Language.PYTHON,
+        chunk_size=100,
+        chunk_overlap=0,
+    )
+-Semantic Meaning Based
+    chunks made using semantic meaning
+
+    it uses cosine similarity approach among the sentences in a sliding window pattern. if the cosine similarity of the consecutive embeddings is low then it means topic has changed
+
+    from langchain_experimental.text_splitters import SemanticChunker
+    from langchain_openai import OpenAIEmbeddings
+    
+    embeddings = OpenAIEmbeddings()
+
+
+    text_splitter = SemanticChunker(
+        OpenAIEmbeddings(),
+        breakpoint_threshold_type="standard_deviation",
+        breakpoint_threshold_amount=1,
+    )
+    text = """text"""
+    
+    chunks = splitter.split_text(text)
+
+
+Chunk overalap:
+    benifit: Helps the model understand the context of each chunk, because previous chunk information is retained in the overlapping text
+    
+    if we increase chunk overlap,
+        then more context overlap occurs but we can get more chunks
+
+    if we decrease chunk overlap,
+        then we lose context

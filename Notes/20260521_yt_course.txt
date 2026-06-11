@@ -1,0 +1,250 @@
+AI Limitations:
+    AI is useful but it can't learn on its own. 
+
+    AI detects patterns(keywords, outlines...) and decide 
+
+    Traditional AI can't update the rule set, it needs human intervention and retraining to handle new cases. 
+
+
+Agentic AI:
+    Agentic AI is a type of AI that can make decisions and act on its own.
+
+    It can handle Complex and Unpredictable situations.
+
+    it can Adapt and learn over time. 
+
+
+
+Agentic AI vs Traditional AI in shopping recommendation system
+
+Traditional AI:
+    suggest products based on past behavior
+
+    recommends similar items
+
+    doesn't adapt to sudden changes in user preferences
+
+
+Agentic AI:
+    Adapts to real-time data like discount, real time deals and location. 
+
+    learns from user interactions and changing preferences
+    
+    provides personalized recommendations
+
+    it can also notify when something in your cart is going to be out of stock or something you would like to checkout is on flash sale.
+
+
+Generative AI:
+    creates new data that doesn't come up in the training data.
+
+    GANs can generate real faces.
+
+    it just generate content but doesn't take any decisions or actions
+
+
+Generative AI + Agentic AI:
+    Advertising and marketing:
+        Agentic: Analyze customer data to decide which ads to show
+
+        Generative AI:  creates personalized ad content based on customer preferences
+
+    Customer support chatbots:
+        Agentic Al: Decides the best action to take in customer support
+
+        Generative Al: Creates personalized responses based on the conversation.
+        
+        If a customer asks a tricky question, Agentic Al determines the next step, while Generative Al generates an appropriate, personalized response.
+
+
+Agents:
+    Agent is something which can perceive things and reason from the situation and can act idenpendtly
+
+    Step-1: Understand user's behaviour
+        in ecommerce we can analyse the customer pattern using his viewed history, purchase history and the demographics data etc.
+    Step-2: Decides what to recommend
+        we can use the analysis information to recommend the items using algorithms like collaborative filtering, content based filtering
+    Step-3: taking action
+
+        show similar items
+
+
+LLM Agents:
+    it relies on Largge language models for recommendation.
+
+    They are designed to work with Natural language processing and to process the text input
+
+    They are systems that can read, understand and respond to the user in a conversational way
+
+    Step-1: Understand user's query
+        Example: Query: "Tell me the weather of Delhi today."
+        intent: Get weather data, entity: Delhi
+    Step-2: Decides what needs to be done to answer the user's query
+        Example: Agent decides to use weather API to fetch the weather details.
+    Step-3: taking action
+        Example: Agent will get the weather data from weather API in raw format.
+
+        and show the user the output in human readable way
+
+
+
+Types of AI agents:
+    Simple reflex agents:
+        basic type of agents
+        only react to current situation,
+        doesn't have memory don't plan, it just react
+
+        example simple if-else type:
+            automatic door
+            automatic light
+    Model based reflex agents:
+        a little smarter one that simple reflex agent
+        it has memory included
+        instead of reacting to what's happening right now it also considers the memory
+    Goal based agents:
+        it plans in addition to both reacting and remembering
+
+        it has a goal in mind it choses action that help acheive the goal
+
+        example:
+            gps navigation
+            flight booking assistant
+
+        They are flexible and can replan if the environment changes and they think before they act
+
+        it can also check which information is still missing and ask for those
+    utility-based agents
+        doesn't just reach the goal but try to optimize the way.
+
+        so it considers all the ways and maximize the utility.
+
+        utility is a measure of how good and useful the response is. for this it uses a utility function to score the outcome.
+
+        They are great at making decision smart decisions in uncertain situations.
+
+            example: self-driving car during rains
+                instead of considering only the way it also considers
+
+                which path is less slippery,
+                it there traffic ahead,
+
+                home much battery does the car have eft?
+            and picks the safest, more efficient, more reliable under given environment
+    learning agents
+        gets better over time by learning from own experiences
+
+        it watches what happens after it takes an action and then use that feedback to get better
+
+
+
+Buidling a simple reflex agent:
+    a cleaner bot which simply cleans if the room is dirty or else move to next room.
+
+    imaging having 4 rooms.
+
+    each step(one cycle where the agent) :
+        1. check current room
+        2. decide what to do
+        3. perform the action
+        4. update the environment
+
+Buidling a Goal-based agent using Langchain:
+    a medical appointment scheduler
+    goal: book an appointment
+
+    we are building job application assistant
+        goal: take up full name, email and skills and then reply with thanks, you're all set.
+
+    For using langgraph we need tools
+        Tools are nothing but functions wrapped with Tool wrapper
+        These tools require descirption from which llm will decide which tool to use.
+    
+Reinforcement learning:
+    Agent: it is the main player. Its tasks are
+        observe it's environment(states)
+        take action
+        the environment gives the feedback
+        agent learn from the feedback and adjust its future decisions to get more rewards.
+
+    Agent can't control environment it can only control its actions.
+
+    environment is something where agents lives and work upon.And it gives feedback in form of feedback or penality
+
+    state is that current situation of the environment
+
+    Action will be chosen based on the stretegy, called policy.
+
+Policy:
+
+    policy is the agents plan or stretegy that tells the agent what is the best action to take in the given state.
+
+    Types of policy:
+        Deterministic policy: always choose the same action for the given state
+        Stochastic policy: it calculates the probability and then choose the one which maximizes the expected rewards
+
+    
+Value function:
+    Bellman equation: V(s): E(phi)[R + (gamma)V(s')]
+
+    value funciton determines the next step 
+
+    V(s) - Value of current state
+    R - immediate reward for current action
+    Y - Discount factor (how much we care about future rewards)
+    V(s') - Value of next state
+
+    π - Policy
+    E - Expectation (average over possible outcomes)
+
+    To determine the next step using bellman equation agent should be aware of the policy, next state, rewards.
+
+    it starts without knowing, then it learns overtime. so you can't use the bellman equation directly.
+
+    so we are going to use learning algorithms like:
+        Monte Carlo
+        Temporal Difference learning
+        Q-learning
+    to calculate the value of V(s):
+
+
+
+Q-learning algorithm:
+    it is a model free Reinforcement learning algorithm
+
+    model: it means that it knows the rewards and the next state after taking action
+
+    model-free means: it doesn't know any thing about environment. it learning from trail and error
+
+    Q(s, a): 
+        Q - quality
+        s - state
+        a - action
+
+    in Q-table: 
+        rows represents states and columns represents actions 
+        
+        the model takes up the action for which the reward is maximum in that particular state.
+
+        the values of the Q-table are updated upon each action taken.
+
+        initially the Q-table values are zero
+
+        Q(s, a) = Q(s, a) + (alpha)[ r + (gamma)max(Q(S', a')) -Q(s, a)]
+
+        where Q(s, a) = current Q-value
+            alpha = learing rate
+            r = rewards
+            gamma = discount
+            max(Q(s', a')) = max possible Q-value in the next state
+
+            r + (gamma)max(Q(S', a')) -> indicate the new target the model should aim for
+
+            (gamma)max(Q(S', a')) - Q(s, a) -> error, Difference between what happened and what agent thought
+
+        e-greedy method:
+            we will have two steps: explore or exploit: 
+            explore: agent randomly picks the action 
+            exploit: agent decides to take up the action with maximum Q-value
+
+
+

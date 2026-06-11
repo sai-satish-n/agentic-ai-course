@@ -1,0 +1,38 @@
+Generative AI has 2 parts:
+    User side: we Develop applications using existing models
+    Developer side: we Develop the ai models
+
+
+LangChain is an open source framework that helps in building LLM based applications. It provides modular components and end-to-end tools that help developers build complex Al applications, such as chatbots, question-answering systems, retrieval-augmented generation (RAG), autonomous agents, and more.
+1. Supports all the major LLMs
+2. Simplifies developing LLM based applications
+3. Integrations available for all major tools
+4. Open source/Free/Actively developed
+5. Supports all major GenAl use cases
+
+
+
+Semantic searches is about understanding the meaning of the question and finding the relavant things from that. Semantic search works based on cosine similarity
+
+Maintaining an LLM agent, deploying the agent and integrating all the pipline by us will be difficult if we move from one provider to other for any of the service.
+
+LangChain has wrappers that will integrate smoothly and with minimal code changes we can switch between providers. 
+
+LangChain has the following features
+    Chains: you can have pipelines in the form of chains. And output of one node can be shared with the other node. You can write any complex chain in the simplified way
+
+    Model agonstic: you can switch easily between LLM using LangChain.
+
+    Memory and State Handling
+
+
+What can you build?
+    Conversational Chatbots
+    Al Knowledge Assistants
+    Al Agents
+    Workflow Automation
+    Summarization/Research Helpers
+
+
+
+Haystack and LlamaIndex are two other compitetors of LangChain

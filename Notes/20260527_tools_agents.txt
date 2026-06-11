@@ -1,0 +1,223 @@
+LLMs (like GPT) are great at:
+    Reasoning (Think)
+    Language generation
+
+But they can't do things like:
+    Access live data (weather, news)
+    Do reliable math
+    Call APIs
+    Run code
+    Interact with a database
+
+A tool is just a Python function (or API) that is packaged in a way the LLM can understand and call when needed.
+
+
+
+An Al agent is an LLM-powered system that can autonomously think, decide, and take actions using external tools or APIs to achieve a goal.
+
+
+Agent = LLM + tools
+
+
+Built-in Tools:
+    DuckDuckGoSearchRun         Web search via DuckDuck
+    WikipediaQueryRun           Wikipedia summary
+    PythonREPLTool              Run raw Python code
+    ShellTool                   Run shell commands
+    RequestsGetTool             Make HTTP GET requests
+    GmailSendMessageTool        Send emails via Gmail
+    SlackSendMessageTool        Post message to Slack
+    SQLDatabaseQueryTool        Run SQL queries
+
+
+Example:
+    from langchain_community.tools import DuckDuckGoSearchRun
+    search_tool DuckDuckGoSearchRun()
+    results search_tool.invoke('ipl news')
+    print(results)
+
+
+Custom tools:
+    Use them when:
+        You want to call your own APIs
+        You want to encapsulate business logic
+        You want the LLM to interact with your database, product, or app
+
+    Ways to creat custom tools:
+        using @tool decorator
+        
+        using StructuredTool & Pydantic:
+            A Structured Tool in LangChain is a special type of tool where the input to the tool follows a structured schema, typically defined using a Pydantic model.
+        
+        using BaseTool class:
+            BaseTool is the abstract base class for all tools in LangChain.
+            
+            It defines the core structure and interface that any tool must follow, whether it's a simple one-liner or a fully customized function.
+            
+            All other tool types like @tool, Structured Tool are built on top of BaseTool
+
+            advantage of this method is that you can define the async version of your tool
+
+    Cretaing a custom tool using @tool:
+        define function
+        Add type hinting wherever possible
+        Add docstrings of the function
+        Add @tool decorator on top of function imported from langchain_core
+
+    creating custom tool using Pydantic & StructuredTool:
+        class MultiplyInput (BaseModel):
+            a: int = Field(required=True, description="The first number to add")
+            b: int = Field(required=True, description="The second number to add")
+
+        def multiply_func(a: int, b: int) -> int:
+            return a b
+
+        multiply_tool StructuredTool.from_function(
+            func=multiply_func,
+            name="multiply",
+            description="Multiply two numbers",
+            args_schema=MultiplyInput,
+        )
+
+    creating custom tool using BaseTool:
+        from langchain.tools import BaseTool
+
+        class MultiplyInput(BaseModel):
+            a : int = Field(required=True, description="The first number to add")
+            b : int = Field(required=True, description="The second number to add")
+        class MultiplyTool(BaseTool):
+            name: str "multiply"
+            description: str = "Multiply two numbers"
+            args_schema: Type [BaseModel] = MultiplyInput
+
+            def_run(self, a: int, b: int) -> int:
+                return a * b
+
+        multiply_tool = MultiplyTool()
+
+        multiply_tool.invoke({"a":5, "b":2})
+
+
+    
+Toolkits:
+    A toolkit is just a collection (bundle) of related tools that serve a common purpose packaged together for convenience and reusability.
+
+    In LangChain:
+        A toolkit might be: Google Drive ToolKit
+        And it can contain the following tools
+        GoogleDriveCreateFileTool: Upload a file
+        GoogleDriveSearchTool: Search for a file by name/content
+        GoogleDriveReadFileTool: Read contents of a file
+
+    Defining a toolkit:
+        class MathToolkit:
+            def get_tools(self):
+                return [add, multiply]
+        
+        toolkit MathToolkit()
+        tools = toolkit.get_tools()
+        for tool in tools:
+            print(tool.name, "=>", tool.description) I
+
+Tool Binding is the step where you register tools with a Language Model (LLM) so that:
+    1. The LLM knows what tools are available
+    2. It knows what each tool does (via description)
+    3. It knows what input format to use (via schema)
+
+    llm.bind_tools([list of tools])
+        helps in binding tools to the LLM
+        not every llm has the capability to attach tools
+
+
+tool calling:
+    Tool Calling is the process where the LLM (language model) decides, during a conversation or task, that it needs to use a specific tool (function) and generates a structured output with: 
+        the name of the tool
+        and the arguments to call it with
+
+    The LLM does not actually run the tool - it just suggests the tool and the input arguments. The actual execution is handled by LangChain or you.
+
+    LLM gives output like the list of tools required and their arguments:
+        [
+            {
+                'name': 'multiply',
+                'args': {'a': 3, 'b': 10},
+                'id': 'call_Mn0aMG6dPrW4memyAbaBYj8J',
+                'type': 'tool_call'
+            }
+        ]
+
+    if we invoke the tool with the given tool call suggested values we will have ToolMessage
+    multiply.invoke(
+        {
+            'name': 'multiply',
+            'args': {'a': 3, 'b': 10},
+            'id': 'call_Mn0aMG6dPrW4memyAbaBYj8J',
+            'type':'tool_call'
+        }
+    )
+    
+    Output:
+    ToolMessage(content='30', name='multiply', tool_call_id='call_Mn0aMG6dPrW4memyAbaBYj8J')
+
+
+ToolMessage is a special message that we recive when we execute a tool call.
+
+
+We are builing an agent which can fetch the current convertion rates of currency.
+    tool-1: fetch the current converstion rates
+    tool-2: use the convertion rate to convert the given amount
+
+    input: what is the convertion factor between USD and INR, and based on that can you convert 10 USD to inr
+
+    problem: as it has multiple tool calls into one prompt, it is confused like
+        it asks to fetch conversion_factor properly with base_currency and target_currency
+        but then it has not given proper conversion rate into the second toolcall
+
+    Solution:
+        to handle this type of situations we have InjectedToolArgument in langchain
+
+        InjectedToolArgument will tell LLM like don't try to fill the argument now, I(developer/runtime) will inject this value after running earlier tools
+
+
+
+
+AI Agent:
+    Goal-driven: You tell the agent what you want, not how to do it
+    Autonomous planning: Agent breaks down the problem and sequences tasks on its own
+    Tool-using: Agent calls APIs, calculators, search tools, etc.
+    Context-aware: Maintains memory across steps to inform future actions
+    Adaptive: Rethinks plan when things change (e.g., API fails, no data)
+
+
+LangChain provides hub which contain prompts 
+    eg: ReAct prompt -> Reasoning + action prompt
+
+we create agent using create_react_agent providing all the tools available and the llm configurations
+
+Then we create AgentExecutor giving the tools and the agent(created using create_react_agent). AgentExecutor is responsible for making agent work
+
+
+ReAct:
+    ReAct is a design pattern used in Al agents that stands for Reasoning + Acting. It allows a language model (LLM) to interleave internal reasoning (Thought) with external actions (like tool use) in a structured, multi-step process.
+
+    Instead of generating an answer in one go, the model thinks step by step, deciding what it needs to do next and optionally calling tools (APIs, calculators, web search, etc.) to help it.
+
+Agent Executor orchestrates the entire loop:
+    1. Sends inputs and previous messages(Thought Trace) to the agent
+    2. Gets the next action from agent
+    3. Executes that tool with provided input
+    4. Adds the tool's observation back into the history
+    5. Loops again with updated history until the agent says Final Answer.
+
+
+
+                                                                                                      / AgentAction object generated -> Execute Tool -> Collect Observation ->  update thought pad -> return to agent response
+Agent Executor -> Receive User Query -> Pass User Query + Agent Scratchpad to Agent -> Agent Response/
+                                                                                                     \
+                                                                                                      \ AgentFinish object generated -> Return Final Output
+
+
+
+
+We need to run a loop of thought, action, observation to get the desired output
+

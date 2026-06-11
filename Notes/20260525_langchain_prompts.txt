@@ -1,0 +1,44 @@
+use prompt template for dynamic Prompts
+
+To keep the prompt templates seperate from the file, we need to first save that prompt first using
+    prompt.save("file_name")
+then load the prompt using the load_prompt from langachain core package
+
+
+In langachain we have three types of messages:
+    System messages
+    AI messages
+    Human message  
+
+Message placeholders:
+    They are helpers for placing something into the prompt example when we are supposed to pass the entire chat history then we can use the MessagePlaceholder for the template.
+
+
+
+structured Reponse:
+
+In LangChain, structured output refers to the practice of having language models return responses in a well-defined data format (for example, JSON), rather than free-form text. This makes the model output easier to parse and work with programmatically.
+
+Use cases:
+    Data Extraction
+    API development
+    Building and interacting between agents
+
+
+some LLMs can return the output in structured format but some can't 
+In LangChain we have methods to work with both types of LLMs
+    LLMs that can generate structured Reponse -> with_structured_output()
+    can't generate -> use output parsers
+
+
+with_structured_output:
+    before invoking the model, we need to specify the structur
+    we have three ways
+        JSON
+        typed dict: it is just for representation but not the validation
+        Pydantic Schema: 
+            it has built in validation like the type checking and the input mapping(EmailStr). 
+            we can also add custom validation using the Field function.
+                validation, default values, and field description
+
+    we have a method parameter in with_structured_output indicating if we need json or function calling(which will be used in agent tool calling)

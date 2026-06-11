@@ -1,0 +1,91 @@
+LangChain components
+1. Models
+2. Prompts
+3. Chains
+4. Memory
+5. Indexes
+6. Agents
+
+
+Models:
+
+In LangChain, In LangChain, "models" are the core interfaces through which you interact with Al models.
+
+LLMs have solved the problem of NLP and replying to the question with appropriate answer(context aware text generation)
+
+LangChain standardizes the model creation and interaction
+
+
+LangChain helps to interact with two types of models:
+    Language Models: text in text out
+    Embedding Models: text to vector output
+
+
+Prompts:
+    1. dynamic & reusable Prompts like having placeholders using PromptTemplate
+    2. Rolebased Prompts: 
+    3. Fewshot Prompts Template
+
+
+examples = [
+{"input": "I was charged twice for my subscription this month.", "output": "Billing Issue"},
+{"input": "The app crashes every time I try to log in.", "output": "Technical Problem"},
+{"input": "Can you explain how to upgrade my plan?", "output": "General Inquiry"},
+{"input": "I need a refund for a payment I didn't authorize.", "output": "Billing Issue"},
+]
+#Step 2: Create an example template
+example_template = """
+Ticket: {input}
+Category: {output}
+"""
+#Step 3: Build the few-shot prompt template
+few_shot_prompt = FewShotPromptTemplate(
+    examples examples,
+    example_prompt=PromptTemplate (input_variables=["input", "output"], template=example_template),
+    prefix="Classify the following customer support tickets into one of the categories: 'Billing
+    Issue', 'Technical Problem', or 'General Inquiry'.\n\n",
+    suffix="\nTicket: {user_input}\nCategory:",
+    input_variables=["user_input"],
+)
+
+
+Chains:
+    we can build piplines
+
+    types of chains:
+        Extended: all the nodes are like sequential manner. Combines the prompt template, model invocation, output parsing, and additional processing steps into a single chain using LangChain Expression Language (LCEL)
+            
+        parallel chains: these are like having two things running parallel may be they can intersect at the end
+
+        Branching chains: Have different branches just like we have in the trees
+        
+
+
+Indexes:
+Indexes connect your application to external knowledge-such as PDFs, websites or databases
+    Doc loader: to load the document
+    text splitter: to make it into chunks
+    Vector store: for storing the Embeddings
+    Retrivers: generates Embedding and finds the relavant things using semantic search
+
+
+
+Memory:
+    LLM apis are stateless, doesn't have memory of the previous question
+
+    Memory will solve this problem
+
+    Types of memory:
+        Conversation Buffer Memory: Stores a transcript of recent messages. Great for short chats but can grow large quickly.
+
+        ConversationBuffer WindowMemory: Only keeps the last N interactions to avoid
+        excessive token usage.
+
+        Summarizer-Based Memory: Periodically summarizes older chat segments to keep
+        a condensed memory footprint.
+
+        Custom Memory: For advanced use cases, you can store specialized state (e.g., the user's preferences or key facts about them) in a custom memory class.
+
+
+Agents:
+    

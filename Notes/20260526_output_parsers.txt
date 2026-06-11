@@ -1,0 +1,93 @@
+output parsers:
+    used for structuring the output from LLM that can't generate structured data directly
+    1. dict Output Parser
+    2. list Output Parser
+    3. CSV Output Parser
+    4. JSON Output Parser
+    5. string output parser: converts LLM output to string
+    6. Pydantic output parser
+    7. structured output parser
+    
+    Output Parsers in LangChain help convert raw LLM responses into structured formats like JSON, CSV, Pydantic models, and more. They ensure consistency, validation, and ease of use in applications.
+
+
+String output parsers:
+    from langchain_core.output_parsers import StrOutputParser
+    parser = StroutputParser()
+    chain = template1 | model | parser | template2 | model | parser
+    result = chain.invoke({'topic': 'black hole'})
+    print(result)
+
+
+    in cases where output from one LLM is given as input to another LLM we can better use this String Output Parser
+
+
+JSON Output Parser:
+    from langchain_core.output_parsers import JsonOutputParser
+    parser = JsonOutputParser()
+    template = PromptTemplate(
+        template='Give me the name, age and city of a fictional person \n {format_instruction}',
+        input_variables=[],
+        partial_variables={'format_instruction': parser.get_format_instructions()}
+    )
+
+    If we add this parser, then it will add additional formatting instructions to the prompt
+
+    LLM will decide the template of the JSON response, we can't fix THE SCHEMA
+
+
+Structured Output Parser:
+    StructuredOutputParser is an output parser in LangChain that helps extract structured JSON data from LLM responses based on predefined field schemas.
+    
+    It works by defining a list of fields (ResponseSchema) that the model should return, ensuring the output follows a structured format.
+
+    But we can't enforce the validation.
+
+    from langchain.output_parsers import StructuredOutputParser, ResponseSchema
+    schema = [
+        ResponseSchema(name='fact_1', description='Fact 1 about the topic'),
+        ResponseSchema(name='fact_2', description='Fact 2 about the topic'),
+        ResponseSchema(name='fact_3', description='Fact 3 about the topic'),
+    ]
+    parser = StructuredOutputParser.from_response_schemas(schema)
+
+    template = PromptTemplate(
+        template='Give 3 fact about {topic} \n {format_instruction}',
+        input_variables=['topic'],
+        partial_variables={'format_instruction': parser.get_format_instructions()}
+    )
+    prompt = template.invoke({'topic': 'black hole'})
+    final_result = parser.parse(result.content)
+    print(final_result)
+
+    
+    
+    
+    
+
+Pydantic Output Parser:
+    PydanticOutputParser is a structured output parser in LangChain that uses Pydantic models to enforce schema validation when processing LLM responses.
+    Uses:
+        Strict Schema Enforcement Ensures that LLM responses follow a well-defined structure.
+        Type Safety Automatically converts LLM outputs into Python objects.
+        Easy Validation - Uses Pydantic's built-in validation to catch incorrect or missing data.
+        Seamless Integration Works well with other LangChain components.
+
+    from langchain_core.output_parsers import PydanticOutputParser
+    from pydantic import BaseModel, Field
+    class Response(BaseModel):
+        name: str = Field(description='name of the person')
+        age: int = Field(description='age of the person')
+        city: str = Field(description='city of the person')
+
+    template = PromptTemplate(
+        template 'Generate the name, age and city of a fictional (place) person \n
+        (format_instruction)",
+        input_variables=['place'],
+        partial_variables={'format_instruction': parser.get_format_instructions()}
+    )
+    
+    chain = template | model | parser
+    final_result = chain.invoke({'place': 'sri lankan'})
+    print(final_result)
+    

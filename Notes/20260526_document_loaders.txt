@@ -1,0 +1,112 @@
+RAG is a technique that combines information retrieval with language generation, where a model retrieves relevant documents from a knowledge base and then uses them as context to generate accurate and grounded responses.
+
+Benefits of using RAG
+    1. Use of up-to-date information
+    2. Better privacy
+    3. No limit of document size
+
+
+Major components of RAG:
+    document loaders
+    Text Splitters
+    Vector databases
+    retrivers
+
+document loader: 
+    Document loaders are components in LangChain used to load data from various sources into a standardized format (usually as Document objects), which can then be used for chunking, embedding, retrieval, and generation.
+    
+    
+    Every document loader loads the data in form of python Lists
+    The basic structure of a document is like the following
+
+    Document(
+        page_content="The actual text content",
+        metadata={"source": "filename.pdf", ...}
+    )
+
+
+    Majorly used document loaders are : 
+        TextLoader:
+            converts plain text(.txt) to LangChain Document
+            ideal for logs, transcripts, code snippets etc
+
+            from langchain_community.document_loaders import TextLoader
+            loader = TextLoader("example.txt", encoding="utf-8")
+            doc = loader.load() # loads into memory
+
+        PyPDFLoader:
+            PyPDFLoader is a document loader in LangChain used to load content from PDF files and convert each page into a Document object.
+
+            [
+                Document(page_content="Text from page 1", metadata={"page": 0, "source": "file.pdf")),
+                Document (page_content="Text from page 2", metadata={"page": 1, "source": "file.pdf")),
+            ]
+
+            it converts each page into each document, so the lenght of the list will be no.of pages
+
+            Limitations:
+                It uses the PyPDF library under the hood not great with scanned PDFs or complex layouts
+
+            Use Case                        Recommended Loader
+            Simple, clean PDFs              PyPDF Loader
+            PDFs with tables/columns        PDFPlumberLoader
+            Scanned/image PDFs              UnstructuredPDF Loader or AmazonTextractPDFLoader
+            Need layout and image data      PyMuPDFLoader
+            Want best structure extraction  UnstructuredPDF Loader
+
+        DirectoryLoader:
+            if you have information in a Directory with different file types then you can use DirectoryLoader.
+
+            loader = Directory Loader(
+                path='books',   #Directory path to load from
+                glob='*.pdf',   #for identifying the types of files to load
+                loader_cls=PyPDFLoader #loader to use
+            )
+
+        CSVLoader:
+            For each row we will get a Document and each document will have entire row information.
+
+            from langchain_community.document_loaders import CSVLoader
+            loader = CSVLoader (file_path='Social_Network_Ads.csv')
+            docs loader.load()
+            
+        WebBasedLoader:
+            WebBaseLoader is a document loader in LangChain used to load and extract text content from web pages (URLs).
+            It uses BeautifulSoup under the hood to parse HTML and extract visible text.
+            When to Use:
+                For blogs, news articles, or public websites where the content is primarily text-based and static.
+            Limitations:
+                Doesn't handle JavaScript-heavy pages well (use SeleniumURLLoader for that).
+                Loads only static content (what's in the HTML, not what loads after the page renders). 
+
+            from langchain_community.document_loaders import WebBaseLoader
+            url = 'https://www.flipkart.com/apple-macbook-air-m2-16-gb-256-gb-s'
+            loader = WebBaseLoader(url)
+            docs = loader.load()
+
+
+        JSONLoader, 
+        UnstructuredFileLoader, 
+        UnstructuredURLLoader, etc.
+
+
+
+Every document loader has two methods : 
+    load()
+        Eager Loading (loads everything at once).
+        Returns: A list of Document objects.
+        Loads all documents immediately into memory.
+        Best when:
+            The number of documents is small.
+            You want everything loaded upfront.
+        can be memory intensive if handling multiple large document
+
+
+    lazy_load()
+        Lazy Loading (loads on demand).
+        Returns: A generator of Document objects.
+        Documents are not all loaded at once; they're fetched one at a time as needed.
+        Best when:
+            You're dealing with large documents or lots of files.
+            You want to stream processing (e.g., chunking, embedding) without using lots of memory.
+

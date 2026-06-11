@@ -1,0 +1,42 @@
+The Model Component in LangChain is a crucial part of the framework, designed to facilitate interactions with various language models and embedding models.
+
+It abstracts the complexity of working directly with different LLMs, chat models, and embedding models, providing a uniform interface to communicate with them. This makes it easier to build applications that rely on Al-generated text, text embeddings for similarity search, and retrieval-augmented generation (RAG).
+
+
+LangChain helps to interact with two types of models:
+    Language Models: Language Models are AI systems designed to process, generate, and understand natural language text.
+        LLMs: They are much generalized to use, like you can use for text generation, summarization, 
+        Chat Models: they are for chat based, they take multiple messages(conversation) as input
+    Embedding Models: text to vector output
+
+
+    Feature LLMs (Base Models)  Chat Models (Instruction-Tuned) 
+    Purpose     Free-form text generation       Optimized for multi-turn conversations
+    Training Data   General text corpora (books, articles) Fine-tuned on chat datasets (dialogues, user-assistant conversations)
+    Memory & Context        No built-in memory      Supports structured conversation history
+    Role Awareness      No understanding of "user" and "assistant" roles        Understands "system", "user", and "assistant roles
+    Example Models: GPT-3, Llama-2-7B, Mistral-7B, OPT-1.3B         GPT-4, GPT-3.5-turbo, Llama-2-Chat, Mistral-Instruct, Claude
+    Use Cases:      Text generation, summarization, translation, creative writing, code generation       Conversational Al, chatbots, virtual assistants, customer support, Al tutors
+
+
+Temperature:
+
+temperature is a parameter that controls the randomness of a language model's output. It affects how creative or deterministic the responses are.
+Lower values (0.00.3) More deterministic and predictable.
+Higher values (0.71.5)More random, creative, and diverse.
+    Use Case                                            Recommended Temperature
+    Factual answers (math, code, facts)                 0.3
+    Balanced response (general QA, explanations)        0.5-0.7
+    Creative writing, storytelling, jokes               0.9 1.2
+    Maximum randomness (wild ideas, brainstorming)      1.5+
+
+
+
+Embedding Models:
+    if you have a single sentence then use embeddings.embed_query, 
+    if you have a list of strings then use embeddings.embed_documents
+    they can be used to perform semantic search
+
+    from sklearn.metrics.pairwise import cosine_similarity
+
+    cosine_similarity(query:2d_list, embeded_documents:2d_list) -> the highest similarity is considered
